@@ -135,3 +135,35 @@ describe('DELETE /todos', () => {
             .end(done);
     });
 });
+
+describe('PATCH /todos:id', () => {
+    it('Should return update the todo', (done) => {
+        var hexId = todos[1]._id.toHexString();
+        request(app)
+            .patch(`/todos/${hexId}`)
+            .send({text: "updates from test suite",
+                completed: true })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe("updates from test suite");
+                expect(res.body.todo.completed).toBe(true);
+                expect(typeof res.body.todo.completedAt).toBe('number');
+            })
+            .end(done);
+    });
+
+    it('Should clear completedAt when todo is not completed', (done) => {
+        var hexId = todos[1]._id.toHexString();
+        request(app)
+            .patch(`/todos/${hexId}`)
+            .send({text: "updates from test suite",
+                completed: false })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe("updates from test suite");
+                expect(res.body.todo.completed).toBe(false);
+                expect(res.body.todo.completedAt).toBeFalsy();
+            })
+            .end(done);
+    });
+});
