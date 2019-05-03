@@ -87,6 +87,17 @@ app.patch('/todos/:id', (req,res) => {
     })
 });
 
+// Users
+
+app.post('/users',(req,res) => {
+    var body = _.pick(req.body,['email','password']);
+    var newuser = new users(body);
+
+    newuser.save().then((user) => {
+        res.send(user);
+    }).catch((e) => res.status(400).send(e));
+});
+
 app.listen(process.env.PORT,() => {
     console.log("Server started listening on port 3000");
 });
